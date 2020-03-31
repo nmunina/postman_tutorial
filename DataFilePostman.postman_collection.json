@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "f58461bc-bff6-496f-8546-c4f3d58250cf",
+		"name": "DataFilePostman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "random_color",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "61aac437-2a7c-426a-99dd-6ee064a72636",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Status code is 200\", () => pm.expect(responseCode.code).to.equal(200));",
+							"pm.test(\"Response time is below 2 sec\", () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+							"pm.test(\"Color id\", () => pm.expect(jsonData.data.id).to.equal(data.random_color));",
+							"pm.test(\"Color id for \"+jsonData.data.name+\" is \"+jsonData.data.id, () => pm.expect(jsonData.data.id).to.equal(data.random_color));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/{{random_color}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"{{random_color}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

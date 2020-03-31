@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "903739e4-5ff3-47a9-997e-505ed7fdb766",
+		"name": "Snapshot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a6daf046-4bbf-4e95-b076-a2cd6d83ebf3",
+				"type": "text/javascript",
+				"exec": [
+					"pm.variables.set('testFunction', function testFunction() {",
+					"    const result = pm.variables.get('result');",
+					"    const respons = pm.response.json();",
+					"    ",
+					"    return {",
+					"        testColorList: function testColorList() {",
+					"            const getResults = (id) => result.data.find(x => x.id === id);",
+					"            const testResults = (actual, expected) => {",
+					"                //pm.test(actual.id+ ' id name is '+actual.name, () => pm.expect(actual.name).to.equal(expected.name));",
+					"                //pm.test(actual.id + ' id color is '+actual.color, () => pm.expect(actual.color).to.equal(expected.color));",
+					"                //pm.test(actual.id + ' id year is '+ actual.year, () => pm.expect(actual.year).to.equal(expected.year));",
+					"                pm.test(actual.id + ' id email is '+ actual.email, () => pm.expect(actual.email).to.equal(expected.email));",
+					"                pm.test(actual.id + ' id first name is '+ actual.first_name, () => pm.expect(actual.first_name).to.equal(expected.first_name));",
+					"                pm.test(actual.id + ' id last name is '+ actual.last_name, () => pm.expect(actual.last_name).to.equal(expected.last_name));",
+					"            };",
+					"            respons.data.forEach(x => testResults(x, getResults(x.id)));",
+					"        }",
+					"    };",
+					"} + '; testFunction();');"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f3a34bb3-da1f-4267-8207-ceb9e37a54c4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

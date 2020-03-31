@@ -1,0 +1,247 @@
+{
+	"info": {
+		"_postman_id": "2d8403eb-31be-447f-84ef-a5a291f0e992",
+		"name": "CrUD postman Tutorial",
+		"description": "Training in Postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Basic functions",
+			"item": [
+				{
+					"name": "List Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "46dbf17f-c58a-427a-b49d-b784999070bf",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"// + 2.1 Create a GET request against ”List Users”\r",
+									"\r",
+									"//2.2 Verify that the status code is 200\r",
+									"//the request has succeeded GET: The resource has been fetched and is transmitted in the message body.\r",
+									"pm.test(\"Status code is 200\", () => pm.expect(responseCode.code).to.equal(200));\r",
+									"\r",
+									"pm.test(\"Response time is below 2 sec\", () => pm.expect(pm.response.responseTime).to.be.below(2000));\r",
+									"pm.test(\"Number of results per page is 6\", () => pm.expect(jsonData.data.length).to.equal(6));\r",
+									"pm.test(\"Second avatar in not null\", () => pm.expect(jsonData.data[1].avatar).to.not.equal(null));\r",
+									"\r",
+									"//The third LAST name is Wong in body. This test will fail.\r",
+									"pm.test(\"Third first_name is Wong\", () => pm.expect(jsonData.data[2].first_name).to.equal(\"Wong\"));\r",
+									"pm.test(\"Eve is in response\", () => pm.expect(pm.response.text()).to.include(\"Eve\"));\r",
+									"\r",
+									"//2.8 Save the id for the fifth result on the first page in an global variable\r",
+									"pm.globals.set(\"user_id\", jsonData.data[4].id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e028647c-362a-49e8-bc77-524bf384ab01",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"//+3.1 Create a GET request against ”Single User” and use your global variable to get the right user\r",
+									"\r",
+									"//snippet\r",
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });\r",
+									"//lambda\r",
+									"pm.test(\"Status code is 200\", () => pm.expect(responseCode.code).to.equal(200));\r",
+									"\r",
+									"pm.test(\"Response time is less than 2s\", () => pm.expect(pm.response.responseTime).to.be.below(2000));\r",
+									"pm.test(\"Returned id is same as global user_id\", () => pm.expect(jsonData.data.id).to.equal(pm.globals.get(\"user_id\")));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1775285f-e613-4c11-ad97-109370e51702",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(pm.globals.set(\"my_id\", jsonData.id));\r",
+									"\r",
+									"//4.1 Create a POST request against ”Create” and post your own name and dream job\r",
+									"\r",
+									"// 201 the request has succeeded and has led to the creation of a resource\r",
+									"pm.test(\"Status code is 201\", () => pm.expect(responseCode.code).to.equal(201));\r",
+									"pm.test(\"Response time is less than 2s\", () => pm.expect(pm.response.responseTime).to.be.below(2000));\r",
+									"\r",
+									"pm.test(\"Returned id not null\", () => pm.expect(jsonData.id).to.not.equal(null));\r",
+									"pm.test(\"CreatedAt is not null\", () => pm.expect(jsonData.createdAt).to.not.equal(null));\r",
+									"pm.test(\"Returns my name\", () => pm.expect(jsonData.name).to.equal(\"Natalia\"));\r",
+									"pm.test(\"Returns my dream job\", () => pm.expect(jsonData.job).to.equal(\"QA\"));\r",
+									"\r",
+									"//4.8 Save the id returned in a global variable\r",
+									"pm.globals.set(\"my_id\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Natalia\",\n    \"job\": \"QA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "59d8f123-76d7-4315-b674-bffcef95f9d7",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.globals.get(\"my_id\");\r",
+									"\r",
+									"//5.1 Create a PUT request against ”Update” and use your global variable for the user you created in step 4 and change the job to ”Postman Master”\r",
+									"\r",
+									"pm.test(\"Status code is 200\", () => pm.expect(responseCode.code).to.equal(200));\r",
+									"pm.test(\"Response time is less than 2s\", () => pm.expect(pm.response.responseTime).to.be.below(2000));\r",
+									"\r",
+									"//5.4 Verify that the job returned is ”Postman Master”\r",
+									"pm.test(\"Returned job is Postman Master\", () => pm.expect(jsonData.job).to.equal(\"Postman Master\"));\r",
+									"\r",
+									"//5.5 Verify that updatedAt is not null\r",
+									"pm.test(\"updatedAt is not null\", () => pm.expect(jsonData.updatedAt).to.not.equal(null));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"Natalia\",\n   \"job\": \"Postman Master\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/{{my_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{my_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a8a9071-6d1e-431d-a962-baf4584cba1f",
+								"exec": [
+									"//6.1 Crete a DELETE request against ”Delete” and use your global variable for the user you created in step 4 and updated in step 5\r",
+									"//6.2 Verify that te status code is 204 No Content\r",
+									"// the request has succeeded, but that the client doesn't need to go away from its current page\r",
+									"pm.test(\"Status code is 204\", () => pm.expect(responseCode.code).to.equal(204));\r",
+									"\r",
+									"//6.3 Verify that the reponse time is below 2 seconds\r",
+									"pm.test(\"Response is below 2s\", () => pm.expect(pm.response.responseTime).to.be.below(2000));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/{{my_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{my_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
