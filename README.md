@@ -4,8 +4,9 @@ Collection of Postman tests for educational purposes.
 
 ## CrUD
 
-* create uset
+* create user
 * update user
+* confirm that respons is as planned
 
 ## Data File
 
